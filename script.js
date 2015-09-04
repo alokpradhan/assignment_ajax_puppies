@@ -22,21 +22,26 @@ function populatePuppyList(puppies) {
 }
 
 function sortedNewPuppyData(){
-  var inputs = $('form').serialize();
-  return JSON.parse(inputs);
+  // var inputs = $('form').serialize();
+  // return inputs;
   // console.log(input);
-  // var name = $('#name').val();
+  var name = $('#name').val();
   // console.log(name);
-  // var breed = $('#breed').val();
+  var breed = $('#breed').val();
   // console.log(breed);
+  var data = {name: name, breed_id: breed};
+  return data;
 }
 
 function addPuppy(){
-  sortedNewPuppyData();
+  var data = sortedNewPuppyData();
   $.ajax({
     url: "https://pacific-stream-9205.herokuapp.com/puppies.json",
+    data: JSON.stringify(data),
     type: 'POST',
     dataType: 'json',
+    contentType: "application/json",
+    headers: { 'Access-Control-Allow-Origin': 'http://localhost:3000'},
     success: function(puppies) { populatePuppyList(puppies); },
     error: function() { console.log("error"); }
   });
@@ -53,6 +58,11 @@ $(document).ready(function(){
     e.preventDefault();
     addPuppy();
   });
+  // $( "form" ).submit(function( event ) {
+  //   console.log( $( this ).serializeArray() );
+  //   addPuppy($( this ).serializeArray());
+  //   event.preventDefault();
+// });
 
 });
 
