@@ -12,12 +12,13 @@ function getLatestPuppyList(){
 
 function populatePuppyList(puppies) {
   // var yourObject = JSON.parse(json);
-  // console.log(puppies);
   $('#puppies').siblings().empty();
   for(var i=0; i < puppies.length; i++){
     var name = puppies[i].name;
     var breed = puppies[i].breed['name'];
     // $('#puppies').append('<tr> <td>'+name+'</td><td>'+breed+'</td> </tr>');
+
+    // Refactor: Build a tag in a function
     var link = '<a href=# class=\"adopt-link\" id=\"' + puppies[i].id + '\">adopt<\a>';
     $('<tr> <td>'+name+'</td><td>'+breed+'</td> <td>'+link+'</td></tr>').insertAfter('#puppies');
   }
@@ -25,6 +26,7 @@ function populatePuppyList(puppies) {
 
 function sortedNewPuppyData(){
   // var inputs = $('form').serialize();
+  // console.log(inputs);
   var name = $('#name').val();
   var breed = $('#breed').val();
   var data = {name: name, breed_id: breed};
@@ -76,7 +78,6 @@ function displayError(msg){
 function adoptPuppy(id) {
   var baseUrl = 'https://pacific-stream-9205.herokuapp.com/puppies/';
   var url = baseUrl + id + '.json';
-
   $.ajax({
     url: url,
     data: JSON.stringify({id: id}),
@@ -85,7 +86,7 @@ function adoptPuppy(id) {
     headers: { 'Access-Control-Allow-Origin': 'http://localhost:3000'},
     success: function() { console.log("success"); },
     error: function() { console.log("error"); }
-  })
+  });
 }
 
 $(document).ready(function(){
