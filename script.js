@@ -1,3 +1,5 @@
+var breeds = {};
+
 function getLatestPuppyList(){
   $.ajax({
     url: "https://pacific-stream-9205.herokuapp.com/puppies.json",
@@ -15,20 +17,14 @@ function populatePuppyList(puppies) {
   for(var i=0; i < puppies.length; i++){
     var name = puppies[i].name;
     var breed = puppies[i].breed['name'];
-    $('#puppies').append('<tr> <td>'+name+'</td><td>'+breed+'</td> </tr>');
+    $('#puppies').prepend('<tr> <td>'+name+'</td><td>'+breed+'</td> </tr>');
   }
-  // console.log(typeof json);
-  // $("#puppy-list").text(json.html);
 }
 
 function sortedNewPuppyData(){
   // var inputs = $('form').serialize();
-  // return inputs;
-  // console.log(input);
   var name = $('#name').val();
-  // console.log(name);
   var breed = $('#breed').val();
-  // console.log(breed);
   var data = {name: name, breed_id: breed};
   return data;
 }
@@ -42,27 +38,51 @@ function addPuppy(){
     dataType: 'json',
     contentType: "application/json",
     headers: { 'Access-Control-Allow-Origin': 'http://localhost:3000'},
-    success: function(puppies) { populatePuppyList(puppies); },
+    success: function(new_puppy) { addPuppyToList(new_puppy); },
+    error: function(obj, status, msg) { displayError(msg); }
+  });
+}
+
+function addPuppyToList(puppy) {
+  console.log(puppy);
+  var name = puppy.name;
+  var breed_id = puppy.breed_id;
+  $('#puppies').prepend('<tr> <td>'+name+'</td><td>'+breed[breed_id]+'</td> </tr>');
+}
+
+function breedList(){
+  $.ajax({
+    url: "https://pacific-stream-9205.herokuapp.com/breeds.json",
+    type: 'GET',
+    dataType: 'json',
+    success: function(breeds) { populateBreedList(breeds); },
     error: function() { console.log("error"); }
   });
 }
 
+function populateBreedList(returnedBreeds){
+  for(var i = 0; i < returnedBreeds.length; i++){
+    breeds[returnedBreeds[i].id] = returnedBreeds[i].name;
+  }
+}
+
+function displayError(msg){
+  $('#error-msg').text(msg);
+}
+
 $(document).ready(function(){
 
-  $("#puppy-list").click(function(e){
+  breedList();
+
+  $('#puppy-list').click(function(e){
     e.preventDefault();
     getLatestPuppyList();
   });
 
-  $('#submit').click(function(e){
+  $('form').submit(function(e){
     e.preventDefault();
     addPuppy();
   });
-  // $( "form" ).submit(function( event ) {
-  //   console.log( $( this ).serializeArray() );
-  //   addPuppy($( this ).serializeArray());
-  //   event.preventDefault();
-// });
 
 });
 
